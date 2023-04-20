@@ -1,9 +1,14 @@
 import uvicorn
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from module import FastAPI, CORSMiddleware, BaseModel, StaticFiles, os
+
+from app.routes.auth import router as AuthRouter
+from app.service.auth.jwt import LoginRequired
+
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "static")), name="static")
+
 
 origins = ["*"]
 
@@ -21,17 +26,12 @@ class User(BaseModel):
     hostname: str
 
 
-@app.get("/api/user", response_model=User)
-def read_user():
-    import socket
-    username = "bagus "
-
-    return {"username": username, "hostname": socket.gethostname()}
+@app.get("/", response_model=None)
+def root(auth: LoginRequired):
+    return "hellow"
 
 
-@app.get("/api/")
-def read_root():
-    return {"Hello": "World"}
+app.include_router(AuthRouter)
 
 
 if __name__ == "__main__":

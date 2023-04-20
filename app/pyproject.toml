@@ -10,6 +10,16 @@ packages = [{include = "app"}]
 python = "^3.10"
 fastapi = "^0.95.0"
 uvicorn = "^0.21.1"
+pymongo = "^4.3.3"
+motor = "^3.1.2"
+python-multipart = "^0.0.6"
+alembic = "^1.10.3"
+psycopg2-binary = "^2.9.6"
+sqlalchemy = "^2.0.9"
+sqlalchemy-file = "^0.4.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-dotenv = "^1.0.0"
+fastapi-jwt-auth = "^0.5.0"
 
 
 [build-system]
