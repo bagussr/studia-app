@@ -28,3 +28,5 @@ next-env.d.ts
 **/poetry.lock
 
 **/__pycache__
+
+**/.env

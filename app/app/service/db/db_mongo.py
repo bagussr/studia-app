@@ -1,6 +1,8 @@
 from app.module import Any, motor
 
-client = motor.AsyncIOMotorClient("")
+client = motor.AsyncIOMotorClient(
+    "mongodb+srv://xnerro12:dadasdudus12@cluster0.behcwsc.mongodb.net/?retryWrites=true&w=majority"
+)
 
 db = client.studia
 

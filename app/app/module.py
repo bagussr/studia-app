@@ -1,8 +1,9 @@
 # fastapi dependencies
-from fastapi import FastAPI, APIRouter, Request, Depends, Body
+from fastapi import FastAPI, APIRouter, Request, Depends, Body, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.encoders import jsonable_encoder
 
 # sqlalchemy dependencies
 from sqlalchemy import Integer, String, Boolean, create_engine, func, DateTime, Column, Enum, ForeignKey, Date
@@ -17,8 +18,9 @@ from bson import ObjectId
 
 # sccurity dependencies
 from fastapi.security import HTTPBearer
-from jose import JWTError, jwt
 from passlib.context import CryptContext
+from fastapi_jwt_auth import AuthJWT
+from fastapi_jwt_auth.exceptions import AuthJWTException
 
 
 # other dependencies

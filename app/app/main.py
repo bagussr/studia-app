@@ -1,13 +1,14 @@
 import uvicorn
-from module import FastAPI, CORSMiddleware, BaseModel, HTTPBearer, Depends
+from module import FastAPI, CORSMiddleware, BaseModel, StaticFiles, os
 
 from app.routes.auth import router as AuthRouter
-
-
-security = HTTPBearer()
+from app.service.auth.jwt import LoginRequired
 
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "static")), name="static")
+
 
 origins = ["*"]
 
@@ -25,8 +26,8 @@ class User(BaseModel):
     hostname: str
 
 
-@app.get("/")
-def root(token=Depends(security)):
+@app.get("/", response_model=None)
+def root(auth: LoginRequired):
     return "hellow"
 
 
