@@ -35,7 +35,7 @@ def get_config():
     return Settings()
 
 
-def get_current_user(authorize: AuthJWT = Depends(), token=Depends):
+def get_current_user(authorize: AuthJWT = Depends(), token=Depends(security)):
     authorize.jwt_required()
     username = authorize.get_jwt_subject()
     return username

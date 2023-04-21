@@ -21,11 +21,6 @@ app.add_middleware(
 )
 
 
-class User(BaseModel):
-    username: str
-    hostname: str
-
-
 @app.get("/", response_model=None)
 def root(auth: LoginRequired):
     return "hellow"
