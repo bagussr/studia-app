@@ -1,8 +1,6 @@
 from app.module import Any, motor
 
-client = motor.AsyncIOMotorClient(
-    ""
-)
+client = motor.AsyncIOMotorClient("your url connection")
 
 db = client.studia
 
