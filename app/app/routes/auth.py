@@ -12,11 +12,6 @@ router = APIRouter(
     tags=["auth"],
 )
 
-z = {
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZXJybyIsImlhdCI6MTY4MjQwMTg2MiwibmJmIjoxNjgyNDAxODYyLCJqdGkiOiJhOWM5NTQ3Ni01OWI4LTRmMjgtYWM5Ni1lMGY3MzE2M2YwMzYiLCJleHAiOjE2ODI0MDU0NjIsInR5cGUiOiJhY2Nlc3MiLCJmcmVzaCI6dHJ1ZSwicm9sZSI6IlJvbGUuQURNSU4ifQ.akugTFaRA4VpYZvLAxBCR9J-163DcfAVJv6qmEWtj8A",
-    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZXJybyIsImlhdCI6MTY4MjM5Njk0MywibmJmIjoxNjgyMzk2OTQzLCJqdGkiOiIzMDYyYTdjZS0yZTAyLTQxOWQtODgyYi03MWZlNTg2MjkxNDkiLCJ0eXBlIjoicmVmcmVzaCIsInJvbGUiOiJSb2xlLkFETUlOIn0.mylzY_YaCLOT5QLbWy07yfoFhS0nKyQmS0XLaTKO2TA",
-}
-
 
 @router.post("/login")
 def login(data: LoginForm, db: Db, authorize: AuthJWT = Depends()):
