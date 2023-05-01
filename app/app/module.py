@@ -1,5 +1,5 @@
 # fastapi dependencies
-from fastapi import FastAPI, APIRouter, Request, Depends, Body, HTTPException, status
+from fastapi import FastAPI, APIRouter, Request, Depends, Body, HTTPException, status, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -17,18 +17,20 @@ import motor.motor_asyncio as motor
 from bson import ObjectId
 
 # sccurity dependencies
-from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from passlib.context import CryptContext
 from fastapi_jwt_auth import AuthJWT
-from fastapi_jwt_auth.exceptions import AuthJWTException
-
+from fastapi_jwt_auth.exceptions import AuthJWTException, RefreshTokenRequired, JWTDecodeError
+from fastapi.security.http import HTTPBase
+from fastapi.security.utils import get_authorization_scheme_param
+from fastapi.openapi.models import HTTPBearer as HTTPBearerModel
 
 # other dependencies
 import uuid
 import datetime
 from enum import Enum as EnumClass, IntEnum
-from pydantic import BaseModel, Field, BaseSettings, validator, PrivateAttr
-from typing import Any, List, Annotated
+from pydantic import BaseModel, Field, BaseSettings, validator, PrivateAttr, EmailStr
+from typing import Any, List, Annotated, Optional
 import json
 import os
 from dotenv import load_dotenv
