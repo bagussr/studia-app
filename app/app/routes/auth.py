@@ -1,9 +1,9 @@
-from app.module import APIRouter, Depends, AuthJWT, HTTPException, status
+from app.module import APIRouter, Depends, AuthJWT, HTTPException, status, Request, Optional, List
 from app.schemas.form import LoginForm
-from app.schemas.user import RegisterSchemas, UserSchemas
-from app.service.auth.jwt import create_access_token
+from app.schemas.user import RegisterSchemas, UserSchemas, ProfileSchemas
+from app.service.auth.jwt import create_access_token, LoginRequired, AdminRequired, RefreshRequired
 from app.service.db.db_sql import Db
-from app.controller.mysql.auth import create_account, get_user, get_user_by_username
+from app.controller.mysql.auth import create_account, get_user, get_user_by_username, get_user_profile, get_user_all
 from app.utils.password import verify_password
 
 
@@ -11,6 +11,11 @@ router = APIRouter(
     prefix="/auth",
     tags=["auth"],
 )
+
+z = {
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZXJybyIsImlhdCI6MTY4MjQwMTg2MiwibmJmIjoxNjgyNDAxODYyLCJqdGkiOiJhOWM5NTQ3Ni01OWI4LTRmMjgtYWM5Ni1lMGY3MzE2M2YwMzYiLCJleHAiOjE2ODI0MDU0NjIsInR5cGUiOiJhY2Nlc3MiLCJmcmVzaCI6dHJ1ZSwicm9sZSI6IlJvbGUuQURNSU4ifQ.akugTFaRA4VpYZvLAxBCR9J-163DcfAVJv6qmEWtj8A",
+    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZXJybyIsImlhdCI6MTY4MjM5Njk0MywibmJmIjoxNjgyMzk2OTQzLCJqdGkiOiIzMDYyYTdjZS0yZTAyLTQxOWQtODgyYi03MWZlNTg2MjkxNDkiLCJ0eXBlIjoicmVmcmVzaCIsInJvbGUiOiJSb2xlLkFETUlOIn0.mylzY_YaCLOT5QLbWy07yfoFhS0nKyQmS0XLaTKO2TA",
+}
 
 
 @router.post("/login")
@@ -28,7 +33,40 @@ async def register(data: RegisterSchemas, db: Db):
     return user
 
 
+@router.get("/user/current", response_model=UserSchemas)
+def current_user(db: Db, auth: LoginRequired):
+    user = get_user_by_username(auth, db)
+    return user
+
+
+@router.get("/user/profile")
+async def current_profile(db: Db, auth: LoginRequired, populate: Optional[str] = None):
+    profile = await get_user_profile(auth, db)
+    if populate == "*":
+        return profile
+    if populate == "media":
+        profile.__delattr__("user")
+        return profile
+    if populate == "user":
+        profile.__delattr__("media")
+        return profile
+    if populate is None:
+        profile.__delattr__("user")
+        profile.__delattr__("media")
+        return profile
+
+
+@router.get("/user/list", response_model=List[UserSchemas])
+def read_all_user(db: Db, auth: AdminRequired):
+    return get_user_all(db)
+
+
 @router.get("/user/{id}", response_model=UserSchemas)
-def read_user(id: str, db: Db):
+def read_user(id: str, db: Db, auth: AdminRequired):
     user = get_user(id, db)
     return user
+
+
+@router.post("/refresh-token")
+def refresh_token(auth: RefreshRequired, request: Request):
+    return auth

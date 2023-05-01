@@ -20,10 +20,11 @@ class MediaBase(BaseModel):
     created_at: datetime.datetime = Field(default_factory=datetime.datetime.now)
     update_at: datetime.datetime = Field(default_factory=datetime.datetime.now)
 
-
-class MediaProfile(MediaBase):
-    profile_id: str = "asdasdklj"
-
     class Config:
+        allow_population_by_field_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+
+
+class MediaProfile(MediaBase):
+    profile_id: str
