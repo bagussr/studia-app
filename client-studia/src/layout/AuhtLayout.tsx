@@ -11,7 +11,7 @@ export const AuthLayout: react.FC = () => {
         <Box as='section' display='flex' w='full'>
           <Outlet />
         </Box>
-        <Box display={{ sm: 'flex', base: 'none' }} p='2' as='section'>
+        <Box display={{ md: 'flex', base: 'none' }} p='2' as='section'>
           <Image src={base} alt='auth bannner' w='full' />
         </Box>
       </Box>
