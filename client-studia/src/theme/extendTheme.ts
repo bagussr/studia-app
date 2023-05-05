@@ -12,6 +12,21 @@ export const theme = extendTheme({
         color: 'brand.primary',
       },
     },
+    Button: {
+      variants: {
+        google: {
+          bg: 'white',
+          border: '2px solid',
+          borderColor: 'gray.200',
+          _hover: {
+            bg: 'gray.200',
+          },
+          _active: {
+            bg: 'gray.300',
+          },
+        },
+      },
+    },
   },
   sizes: {
     screen: '100vh',

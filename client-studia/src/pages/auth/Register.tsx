@@ -2,11 +2,16 @@ import * as react from 'react';
 import { Box, Image, Container, Link, Heading, Button } from '@chakra-ui/react';
 import { Link as LinkRouter, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { AuthContext } from '../../context/react/authContext';
 
 import logo from '../../assets/images/logo.png';
+import { ChangeUser, RoleRegister, UserRegister } from '../../types/auth/type';
 
 export const Register: react.FC = () => {
+  const { user, changeUser }: { user: UserRegister; changeUser: ChangeUser } =
+    react.useContext(AuthContext);
   const navigate = useNavigate();
+
   return (
     <>
       <Box
@@ -42,6 +47,10 @@ export const Register: react.FC = () => {
               borderRadius='xl'
               onClick={() => {
                 navigate('teacher');
+                changeUser({
+                  ...user,
+                  role: RoleRegister.teacher,
+                });
               }}>
               Guru
             </Button>
@@ -52,6 +61,10 @@ export const Register: react.FC = () => {
               borderRadius='xl'
               onClick={() => {
                 navigate('student');
+                changeUser({
+                  ...user,
+                  role: RoleRegister.student,
+                });
               }}>
               Murid
             </Button>
