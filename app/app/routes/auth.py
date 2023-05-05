@@ -1,9 +1,9 @@
 from app.module import APIRouter, Depends, AuthJWT, HTTPException, status, Request, Optional, List
 from app.schemas.form import LoginForm
-from app.schemas.user import RegisterSchemas, UserSchemas, ProfileSchemas
-from app.service.auth.jwt import create_access_token, LoginRequired, AdminRequired, RefreshRequired
+from app.schemas.user import RegisterSchemas, UserSchemas
+from app.service.auth import jwt as JWTService
 from app.service.db.db_sql import Db
-from app.controller.mysql.auth import create_account, get_user, get_user_by_username, get_user_profile, get_user_all
+from app.controller.mysql import auth as Auth
 from app.utils.password import verify_password
 
 
@@ -12,36 +12,31 @@ router = APIRouter(
     tags=["auth"],
 )
 
-z = {
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZXJybyIsImlhdCI6MTY4MjQwMTg2MiwibmJmIjoxNjgyNDAxODYyLCJqdGkiOiJhOWM5NTQ3Ni01OWI4LTRmMjgtYWM5Ni1lMGY3MzE2M2YwMzYiLCJleHAiOjE2ODI0MDU0NjIsInR5cGUiOiJhY2Nlc3MiLCJmcmVzaCI6dHJ1ZSwicm9sZSI6IlJvbGUuQURNSU4ifQ.akugTFaRA4VpYZvLAxBCR9J-163DcfAVJv6qmEWtj8A",
-    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZXJybyIsImlhdCI6MTY4MjM5Njk0MywibmJmIjoxNjgyMzk2OTQzLCJqdGkiOiIzMDYyYTdjZS0yZTAyLTQxOWQtODgyYi03MWZlNTg2MjkxNDkiLCJ0eXBlIjoicmVmcmVzaCIsInJvbGUiOiJSb2xlLkFETUlOIn0.mylzY_YaCLOT5QLbWy07yfoFhS0nKyQmS0XLaTKO2TA",
-}
-
 
 @router.post("/login")
 def login(data: LoginForm, db: Db, authorize: AuthJWT = Depends()):
-    user = get_user_by_username(data.username, db)
+    user = Auth.get_user_by_username(data.username, db)
     if verify_password(data.password, user.password):
-        token = create_access_token(user.username, str(user.role), authorize)
+        token = JWTService.create_access_token(user.username, str(user.role), authorize)
         return token
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Wrong password")
 
 
 @router.post("/register")
 async def register(data: RegisterSchemas, db: Db):
-    user = await create_account(data=data, db=db)
+    user = await Auth.create_account(data=data, db=db)
     return user
 
 
 @router.get("/user/current", response_model=UserSchemas)
-def current_user(db: Db, auth: LoginRequired):
-    user = get_user_by_username(auth, db)
+def current_user(db: Db, authorize: JWTService.LoginRequired):
+    user = Auth.get_user_by_username(authorize, db)
     return user
 
 
 @router.get("/user/profile")
-async def current_profile(db: Db, auth: LoginRequired, populate: Optional[str] = None):
-    profile = await get_user_profile(auth, db)
+async def current_profile(db: Db, authorize: JWTService.LoginRequired, populate: Optional[str] = None):
+    profile = await Auth.get_user_profile(authorize, db)
     if populate == "*":
         return profile
     if populate == "media":
@@ -57,16 +52,16 @@ async def current_profile(db: Db, auth: LoginRequired, populate: Optional[str] =
 
 
 @router.get("/user/list", response_model=List[UserSchemas])
-def read_all_user(db: Db, auth: AdminRequired):
-    return get_user_all(db)
+def read_all_user(db: Db, authorize: JWTService.AdminRequired):
+    return Auth.get_user_all(db)
 
 
 @router.get("/user/{id}", response_model=UserSchemas)
-def read_user(id: str, db: Db, auth: AdminRequired):
-    user = get_user(id, db)
+def read_user(id: str, db: Db, authorize: JWTService.AdminRequired):
+    user = Auth.get_user(id, db)
     return user
 
 
 @router.post("/refresh-token")
-def refresh_token(auth: RefreshRequired, request: Request):
-    return auth
+def refresh_token(authorize: JWTService.RefreshRequired, request: Request):
+    return authorize

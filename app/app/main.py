@@ -1,5 +1,5 @@
 import uvicorn
-from module import FastAPI, CORSMiddleware, BaseModel, StaticFiles, os
+from module import FastAPI, CORSMiddleware, StaticFiles, os
 
 from app.routes.auth import router as AuthRouter
 from app.service.auth.jwt import LoginRequired

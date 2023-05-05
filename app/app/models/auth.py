@@ -9,7 +9,6 @@ from app.module import (
     Enum,
     ForeignKey,
     relationship,
-    Session,
     Integer,
     Date,
 )

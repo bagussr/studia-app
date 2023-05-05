@@ -1,8 +1,8 @@
 from app.models.auth import Users, Profile, EmailVerification
 from app.module import Session
 from app.schemas.user import RegisterSchemas, ProfileSchemas
-from app.utils.code_generator import randomword_15, randomword_20
-from app.controller.nosql.auth import create_media_profile, get_media_profile
+from app.utils import code_generator as Utils
+from app.controller.nosql import auth as MongoService
 from app.service.helper.exception import not_found_exception
 
 
@@ -26,7 +26,7 @@ async def create_account(data: RegisterSchemas, db: Session):
 
 
 async def create_email_verification(db: Session):
-    email = EmailVerification(code=randomword_15())
+    email = EmailVerification(code=Utils.randomword_15())
     db.add(email)
     db.commit()
     db.refresh(email)
@@ -42,11 +42,11 @@ async def create_user(data: RegisterSchemas, db: Session):
 
 
 async def create_profile(name: str, id: str, db: Session):
-    profile = Profile(id=randomword_20(), user_id=id, name=name)
+    profile = Profile(id=Utils.randomword_20(), user_id=id, name=name)
     db.add(profile)
     db.commit()
     db.refresh(profile)
-    await create_media_profile(profile.id)
+    await MongoService.create_media_profile(profile.id)
     return profile
 
 
@@ -71,7 +71,7 @@ async def get_user_profile(username: str, db: Session):
     profile = db.query(Profile).filter(Profile.user_id == user.id).first()
     if profile is None:
         raise not_found_exception
-    media = await get_media_profile(profile.id)
+    media = await MongoService.get_media_profile(profile.id)
     data = ProfileSchemas(
         id=profile.id,
         name=profile.name,
