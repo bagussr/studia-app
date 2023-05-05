@@ -9,7 +9,7 @@ export interface UserLogin {
 }
 
 export interface UserRegister {
-  role: RoleRegister;
+  role?: RoleRegister;
   name: string;
   username: string;
   email: string;
@@ -27,4 +27,12 @@ export interface AuthToken {
   token: Token;
 }
 
+export interface RegisterInput extends UserRegister {
+  confirmPassword: string;
+}
+
 export type ChangeUser = (data: UserRegister) => void;
+
+export type HandleLogin = (data: UserLogin) => void;
+
+export type HandleRegister = (data: RegisterInput) => void;
