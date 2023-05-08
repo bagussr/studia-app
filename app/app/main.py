@@ -2,6 +2,7 @@ import uvicorn
 from module import FastAPI, CORSMiddleware, StaticFiles, os
 
 from app.routes.auth import router as AuthRouter
+from app.routes.classes import router as ClassRouter
 from app.service.auth.jwt import LoginRequired
 
 
@@ -20,13 +21,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.get("/", response_model=None)
-def root(auth: LoginRequired):
-    return "hellow"
-
-
 app.include_router(AuthRouter)
+app.include_router(ClassRouter)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from app.models.auth import Users, Profile, EmailVerification
+from app.models import auth as AuthModel
 from app.module import Session
 from app.schemas.user import RegisterSchemas, ProfileSchemas
 from app.utils import code_generator as Utils
@@ -7,7 +7,7 @@ from app.service.helper.exception import not_found_exception
 
 
 def get_user_all(db: Session):
-    user = db.query(Users).all()
+    user = db.query(AuthModel.AuthModel.Users).all()
     if user:
         return user
     else:
@@ -26,7 +26,7 @@ async def create_account(data: RegisterSchemas, db: Session):
 
 
 async def create_email_verification(db: Session):
-    email = EmailVerification(code=Utils.randomword_15())
+    email = AuthModel.EmailVerification(code=Utils.randomword_15())
     db.add(email)
     db.commit()
     db.refresh(email)
@@ -34,7 +34,7 @@ async def create_email_verification(db: Session):
 
 
 async def create_user(data: RegisterSchemas, db: Session):
-    user = Users(**data.dict(exclude={"name"}))
+    user = AuthModel.AuthModel.Users(**data.dict(exclude={"name"}))
     db.add(user)
     db.commit()
     db.refresh(user)
@@ -42,7 +42,7 @@ async def create_user(data: RegisterSchemas, db: Session):
 
 
 async def create_profile(name: str, id: str, db: Session):
-    profile = Profile(id=Utils.randomword_20(), user_id=id, name=name)
+    profile = AuthModel.Profile(id=Utils.randomword_20(), user_id=id, name=name)
     db.add(profile)
     db.commit()
     db.refresh(profile)
@@ -50,25 +50,25 @@ async def create_profile(name: str, id: str, db: Session):
     return profile
 
 
-def get_user_by_username(username: str, db: Session):
-    user = db.query(Users).filter(Users.username == username).first()
+def get_user_by_username(username: str, db: Session) -> AuthModel.Users:
+    user = db.query(AuthModel.Users).filter(AuthModel.Users.username == username).first()
     if user:
         return user
     raise not_found_exception
 
 
 def get_user(_id: str, db: Session):
-    user = db.query(Users).filter_by(id=_id).first()
+    user = db.query(AuthModel.Users).filter_by(id=_id).first()
     if user:
         return user
     raise not_found_exception
 
 
 async def get_user_profile(username: str, db: Session):
-    user = db.query(Users).filter(Users.username == username).first()
+    user = db.query(AuthModel.Users).filter(AuthModel.Users.username == username).first()
     if user is None:
         raise not_found_exception
-    profile = db.query(Profile).filter(Profile.user_id == user.id).first()
+    profile = db.query(AuthModel.Profile).filter(AuthModel.Profile.user_id == user.id).first()
     if profile is None:
         raise not_found_exception
     media = await MongoService.get_media_profile(profile.id)
