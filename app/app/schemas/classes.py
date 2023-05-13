@@ -1,4 +1,4 @@
-from app.module import BaseModel, datetime, uuid, Optional, List
+from app.module import BaseModel, datetime, uuid, Optional, Field, validator
 from app.utils.code_generator import randomword_10
 from app.schemas import media as Media
 
@@ -26,11 +26,31 @@ class ClassSchemas(ClassBase):
     created_at: datetime.datetime
     updated_at: datetime.datetime
 
+    def __init__(self, color_hex, name, detail):
+        super().__init__(color_hex=color_hex, name=name, detail=detail)
+
 
 class UpdateClassSchemas(ClassBase):
-    color_hex: str
-    created_at: datetime.datetime
-    updated_at: datetime.datetime
+    name: Optional[str] = None
+    color_hex: str | None = Field(default=None)
+
+    @validator("name")
+    def string_check_name(cls, v):
+        if v == "string":
+            return None
+        return v
+
+    @validator("color_hex")
+    def string_check_color(cls, v):
+        if v == "string":
+            return None
+        return v
+
+    @validator("detail")
+    def string_check_detail(cls, v):
+        if v == "string":
+            return None
+        return v
 
 
 class UserClassBase(BaseModel):
@@ -45,3 +65,7 @@ class UserClassSchemas(UserClassBase):
     id: int
     created_at: datetime.datetime
     updated_at: datetime.datetime
+
+
+class JoinClass(BaseModel):
+    code: str

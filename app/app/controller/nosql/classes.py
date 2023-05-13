@@ -21,3 +21,9 @@ async def get_media_class(class_id: str):
     mongo = MongoClass("media_class", db)
     data = await mongo.filter_by("class_id", class_id)
     return data
+
+
+async def delete_media_class(class_id: str):
+    mongo = MongoClass("media_class", db)
+    data = await mongo.delete("class_id", class_id)
+    return data
