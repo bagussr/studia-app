@@ -51,7 +51,7 @@ def teacher_access(authorize: AuthJWT = Depends(), token=Depends(security)):
         authorize.jwt_required()
         username = authorize.get_jwt_subject()
         role = authorize.get_raw_jwt()["role"]
-        if role == str(Role.ADMIN) and role == str(Role.TEACHER):
+        if role == str(Role.ADMIN) or role == str(Role.TEACHER):
             return username
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

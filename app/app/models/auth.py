@@ -9,7 +9,6 @@ from app.module import (
     Enum,
     ForeignKey,
     relationship,
-    Session,
     Integer,
     Date,
 )
@@ -55,3 +54,4 @@ class Users(Base):
 
     email_verification = relationship("EmailVerification", back_populates="user")
     profile = relationship(Profile, backref="users")
+    user_class = relationship("UserClass", back_populates="_user")
