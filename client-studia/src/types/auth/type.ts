@@ -29,6 +29,7 @@ export interface AuthToken {
 
 export interface RegisterInput extends UserRegister {
   confirmPassword: string;
+  _password2?: string;
 }
 
 export type ChangeUser = (data: UserRegister) => void;

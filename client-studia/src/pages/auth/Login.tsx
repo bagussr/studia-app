@@ -24,7 +24,7 @@ export const Login: react.FC = () => {
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting, touchedFields },
+    formState: { errors, isSubmitting },
   } = useForm<UserLogin>();
 
   const handleLogin: HandleLogin = (data: UserLogin) => {

@@ -27,26 +27,32 @@ export const App: react.FC = () => {
   };
   return (
     <>
-      <AuthWrapper>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/auth' element={<AuthLayout />}>
-            <Route path='login' element={<Login />} />
-            <Route
-              path='register'
-              element={
-                <AuthContext.Provider value={{ user, changeUser }}>
-                  <Outlet />
-                </AuthContext.Provider>
-              }>
-              <Route path='' element={<Register />} />
-              <Route path='teacher' element={<TeacherRegister />} />
-              <Route path='student' element={<StudentRegister />} />
-            </Route>
+      <Routes>
+        <Route
+          path='/'
+          element={
+            // <AuthWrapper>
+            <Outlet />
+            // </AuthWrapper>
+          }>
+          <Route path='' element={<Home />} />
+        </Route>
+        <Route path='/auth' element={<AuthLayout />}>
+          <Route path='login' element={<Login />} />
+          <Route
+            path='register'
+            element={
+              <AuthContext.Provider value={{ user, changeUser }}>
+                <Outlet />
+              </AuthContext.Provider>
+            }>
+            <Route path='' element={<Register />} />
+            <Route path='teacher' element={<TeacherRegister />} />
+            <Route path='student' element={<StudentRegister />} />
           </Route>
-          <Route path='*' element={<NotFoundPage />} />
-        </Routes>
-      </AuthWrapper>
+        </Route>
+        <Route path='*' element={<NotFoundPage />} />
+      </Routes>
     </>
   );
 };

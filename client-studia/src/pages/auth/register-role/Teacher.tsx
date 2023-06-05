@@ -37,9 +37,16 @@ export const TeacherRegister: react.FC = () => {
   } = useForm<RegisterInput>();
 
   const handleRegister: HandleRegister = (data: RegisterInput) => {
+    data._password2 = data.confirmPassword;
     delete data.confirmPassword;
+
     console.log({ ...user, ...data });
   };
+
+  const handleCheckUsername = (event: react.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value);
+  };
+
   return (
     <>
       <Box
@@ -82,10 +89,11 @@ export const TeacherRegister: react.FC = () => {
               placeholder='Username'
               {...register('username', {
                 required: 'Username is required',
+                onBlur: handleCheckUsername,
               })}
             />
           </FormControl>
-          <FormControl>
+          <FormControl isInvalid={errors?.email ? true : false}>
             <Input
               placeholder='Email'
               type='email'
@@ -93,8 +101,9 @@ export const TeacherRegister: react.FC = () => {
                 required: 'Email is required',
               })}
             />
+            <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl>
+          <FormControl isInvalid={errors?.password ? true : false}>
             <Input
               placeholder='Kata Sandi'
               type='password'
@@ -106,6 +115,7 @@ export const TeacherRegister: react.FC = () => {
                 },
               })}
             />
+            <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
           </FormControl>
           <FormControl isInvalid={errors?.confirmPassword ? true : false}>
             <Input
