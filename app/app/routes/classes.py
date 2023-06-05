@@ -11,11 +11,6 @@ router = APIRouter(
     tags=["class"],
 )
 
-{
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiYWd1c3NyIiwiaWF0IjoxNjgzNTEzNTYyLCJuYmYiOjE2ODM1MTM1NjIsImp0aSI6IjBlNjhhOWU4LWMzMmItNDgyMy04NzZkLTk2YWY1NGUyNDFmZiIsImV4cCI6MTY4MzUxNzE2MiwidHlwZSI6ImFjY2VzcyIsImZyZXNoIjp0cnVlLCJyb2xlIjoiUm9sZS5URUFDSEVSIn0.7a8knujbSUcAm7hbiCful92gFbSV26ycmOXsgoZLFqY",
-    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiYWd1c3NyIiwiaWF0IjoxNjgzNTA5ODM2LCJuYmYiOjE2ODM1MDk4MzYsImp0aSI6Ijk4MGVkZmI2LWZiOTEtNDBiYS1iMDUzLWNlZjBiYjE2Y2U3NiIsInR5cGUiOiJyZWZyZXNoIiwicm9sZSI6IlJvbGUuVEVBQ0hFUiJ9.BAqis1u9FWnXUOmmrmCIzhux6d6GUqmlK9fxTWPgV_o",
-}
-
 
 @router.get("/")
 async def get_all_class(db: Db, authorize: Auth.AdminRequired):
