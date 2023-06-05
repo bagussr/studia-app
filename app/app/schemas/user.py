@@ -56,6 +56,10 @@ class UserSchemas(UserBase):
     created_at: datetime.datetime
     updated_at: datetime.datetime
 
+    class Config:
+        orm_mode = True
+        allow_mutations = True
+
 
 class ProfileSchemas(BaseModel):
     id: str

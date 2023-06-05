@@ -11,6 +11,7 @@ from fastapi import (
     File,
     UploadFile,
     Response,
+    Query,
 )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse

@@ -1,6 +1,6 @@
 from app.models import auth as AuthModel
 from app.module import Session
-from app.schemas.user import RegisterSchemas, ProfileSchemas
+from app.schemas.user import RegisterSchemas, ProfileSchemas, UserSchemas
 from app.utils import code_generator as Utils
 from app.controller.nosql import auth as MongoService
 from app.service.helper.exception import not_found_exception
@@ -50,25 +50,55 @@ async def create_profile(name: str, id: str, db: Session):
     return profile
 
 
-def get_user_by_username(username: str, db: Session) -> AuthModel.Users:
-    user = db.query(AuthModel.Users).filter(AuthModel.Users.username == username).first()
+def get_user_by_username(username: str, db: Session):
+    user = (
+        db.query(AuthModel.Users).filter(AuthModel.Users.username == username).first()
+    )
     if user:
         return user
     raise not_found_exception
 
 
-def get_user(_id: str, db: Session):
-    user = db.query(AuthModel.Users).filter_by(id=_id).first()
+def get_user(_id: str, db: Session) -> UserSchemas:
+    user: UserSchemas = db.query(AuthModel.Users).filter_by(id=_id).first()
     if user:
         return user
     raise not_found_exception
 
 
 async def get_user_profile(username: str, db: Session):
-    user = db.query(AuthModel.Users).filter(AuthModel.Users.username == username).first()
+    user = (
+        db.query(AuthModel.Users).filter(AuthModel.Users.username == username).first()
+    )
     if user is None:
         raise not_found_exception
-    profile = db.query(AuthModel.Profile).filter(AuthModel.Profile.user_id == user.id).first()
+    profile = (
+        db.query(AuthModel.Profile).filter(AuthModel.Profile.user_id == user.id).first()
+    )
+    if profile is None:
+        raise not_found_exception
+    media = await MongoService.get_media_profile(profile.id)
+    data = ProfileSchemas(
+        id=profile.id,
+        name=profile.name,
+        no=profile.no,
+        address=profile.address,
+        birth_date=profile.birth_date,
+        user=user,
+        media=media,
+        created_at=profile.created_at,
+        updated_at=profile.updated_at,
+    )
+    return data
+
+
+async def get_user_profile_id(id: str, db: Session):
+    user = db.query(AuthModel.Users).filter(AuthModel.Users.id == id).first()
+    if user is None:
+        raise not_found_exception
+    profile = (
+        db.query(AuthModel.Profile).filter(AuthModel.Profile.user_id == user.id).first()
+    )
     if profile is None:
         raise not_found_exception
     media = await MongoService.get_media_profile(profile.id)

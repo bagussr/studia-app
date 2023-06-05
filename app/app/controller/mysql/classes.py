@@ -2,10 +2,17 @@ from app.module import Session, HTTPException, SQLAlchemyError, Any, List
 from app.models import classes as ClassModel
 from app.schemas import classes as ClassSchemas
 from app.schemas import user as UserSchemas
-from app.service.helper.exception import not_found_exception
+from app.service.helper.exception import not_found_exception, not_found_exception_detail
 from app.controller.mysql import auth as AuthController
 from app.controller.nosql import classes as MongoService
 from app.utils.design_generator import get_design
+
+
+def get_member(class_id: str, db: Session):
+    members = db.query(ClassModel.UserClass).filter(ClassModel.UserClass.class_id == class_id).all()
+    if not members:
+        raise not_found_exception_detail("members not found")
+    return members
 
 
 async def create_class(data: ClassSchemas.CreateClass, owner: str, db: Session):
@@ -128,7 +135,7 @@ async def delete_user_from_class(class_id: str, user_id: str, owner, db: Session
             if user_class:
                 db.delete(user_class)
                 db.commit()
-                db.refresh(user_class)
+                return True
             raise not_found_exception
         raise HTTPException(status_code=403, detail={"msg": "You are not the owner of this class"})
     raise not_found_exception

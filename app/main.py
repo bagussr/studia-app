@@ -1,5 +1,5 @@
 import uvicorn
-from module import FastAPI, CORSMiddleware, StaticFiles, os, Response
+from app.module import FastAPI, CORSMiddleware, StaticFiles, os, Response
 
 from app.routes.auth import router as AuthRouter
 from app.routes.classes import router as ClassRouter
@@ -7,7 +7,9 @@ from app.routes.classes import router as ClassRouter
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "static")), name="static")
+STATIC_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+
+app.mount("/static", StaticFiles(directory=STATIC_FILE), name="static")
 
 
 origins = ["*"]

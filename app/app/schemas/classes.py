@@ -1,6 +1,7 @@
 from app.module import BaseModel, datetime, uuid, Optional, Field, validator
 from app.utils.code_generator import randomword_10
 from app.schemas import media as Media
+from app.schemas import user as User
 
 
 class ClassBase(BaseModel):
@@ -28,6 +29,10 @@ class ClassSchemas(ClassBase):
 
     def __init__(self, color_hex, name, detail):
         super().__init__(color_hex=color_hex, name=name, detail=detail)
+
+
+class DetailClassSchemas(ClassSchemas):
+    members: Optional[User.UserSchemas] = None
 
 
 class UpdateClassSchemas(ClassBase):
